@@ -4,6 +4,7 @@ import com.sharathp.service.symptom_management.dao.PatientDao;
 import com.sharathp.service.symptom_management.model.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +16,7 @@ public class PatientController {
     @Autowired
     private PatientDao patientDao;
 
-    @RequestMapping("/patients")
+    @RequestMapping(value = "/patients", method = RequestMethod.GET)
     public List<Patient> getAllPatients() {
         return patientDao.getAllPatients();
     }
