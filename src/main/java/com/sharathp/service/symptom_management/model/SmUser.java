@@ -23,7 +23,7 @@ public class SmUser implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Id
     private String username;
 
     @CollectionTable(

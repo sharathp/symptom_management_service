@@ -3,7 +3,6 @@ package com.sharathp.service.symptom_management.dao.impl;
 import com.sharathp.service.symptom_management.dao.PatientDao;
 import com.sharathp.service.symptom_management.model.Patient;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
