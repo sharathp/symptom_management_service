@@ -1,5 +1,7 @@
 package com.sharathp.service.symptom_management.config;
 
+import com.sharathp.service.symptom_management.model.Role;
+import com.sharathp.service.symptom_management.model.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +21,7 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
 
 @Configuration
 public class OAuth2SecurityConfiguration {
+
     /**
      *	Resource Server Configuration
      */
@@ -28,9 +31,10 @@ public class OAuth2SecurityConfiguration {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable();
+            http.httpBasic();
             http.authorizeRequests()
                     .antMatchers("/oauth/token").hasRole("CLIENT")
+                    .antMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated();
         }
     }
@@ -52,8 +56,8 @@ public class OAuth2SecurityConfiguration {
             clients
                     .inMemory()
                     .withClient("mobile").authorizedGrantTypes("password","refresh_token")
-                    .authorities("ROLE_CLIENT", "ROLE_TRUSTED_CLIENT")
-                    .scopes("read", "write")
+                    .authorities(Role.CLIENT_ROLE)
+                    .scopes(Scope.READ.name(), Scope.WRITE.name())
                     .secret("123456");
         }
 

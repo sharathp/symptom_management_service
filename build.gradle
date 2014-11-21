@@ -22,6 +22,10 @@ jar {
     version =  '0.1.0'
 }
 
+applicationDefaultJvmArgs = [
+    // "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
+]
+
 repositories {
     maven { url "http://repo.spring.io/libs-release" }
     mavenCentral()
@@ -37,6 +41,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.security.oauth:spring-security-oauth2:2.0.4.RELEASE")
     compile("postgresql:postgresql:9.1-901.jdbc4")
+    compile("com.google.guava:guava:18.0")
     testCompile("junit:junit")
 }
 

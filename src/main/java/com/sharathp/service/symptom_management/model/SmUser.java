@@ -14,12 +14,8 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Set;
 
-@Entity(name = "sm_users")
+@Entity(name = "sm_user")
 public class SmUser implements UserDetails {
-
-    @Transient
-    private Collection<GrantedAuthority> authorities;
-
     @Column(nullable = false)
     private String password;
 
@@ -27,13 +23,13 @@ public class SmUser implements UserDetails {
     private String username;
 
     @CollectionTable(
-            name = "authorities",
-            joinColumns = @JoinColumn(name = "username")
-    )
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "username"))
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    @Column(name="role")
+    private Set<String> roles;
 
-    @ElementCollection(targetClass = String.class)
-    private Set<String> authoritiesList;
-
+    @Override
     public String getPassword() {
         return password;
     }
@@ -46,19 +42,20 @@ public class SmUser implements UserDetails {
         this.username = username;
     }
 
-    public Set<String> getAuthoritiesList() {
-        return authoritiesList;
+    public Set<String> getRoles() {
+        return roles;
     }
 
-    public void setAuthoritiesList(Set<String> authoritiesList) {
-        this.authoritiesList = authoritiesList;
-        this.authorities = AuthorityUtils.createAuthorityList(authoritiesList.toArray(new String[0]));
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 
+    @Override
     public Collection<GrantedAuthority> getAuthorities() {
-        return authorities;
+        return AuthorityUtils.createAuthorityList(roles.toArray(new String[0]));
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
