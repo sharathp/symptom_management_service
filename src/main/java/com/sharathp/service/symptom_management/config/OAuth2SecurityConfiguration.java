@@ -27,15 +27,15 @@ public class OAuth2SecurityConfiguration {
      */
     @Configuration
     @EnableResourceServer
+    @Order(4)
     protected static class ResourceServer extends ResourceServerConfigurerAdapter {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
-            http.httpBasic();
-            http.authorizeRequests()
-                    .antMatchers("/oauth/token").hasRole("CLIENT")
-                    .antMatchers("/admin/**").hasRole("ADMIN")
-                    .anyRequest().authenticated();
+            http.antMatcher("/doctors/**")
+                    .authorizeRequests()
+                    .anyRequest()
+                    .hasRole("DOCTOR");
         }
     }
 
