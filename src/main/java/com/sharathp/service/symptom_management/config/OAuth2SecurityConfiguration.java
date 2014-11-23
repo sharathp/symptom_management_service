@@ -32,7 +32,7 @@ public class OAuth2SecurityConfiguration {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/doctors/**")
+            http.antMatcher("/patients/**")
                     .authorizeRequests()
                     .anyRequest()
                     .hasRole("DOCTOR");
