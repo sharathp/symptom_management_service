@@ -1,5 +1,6 @@
 package com.sharathp.service.symptom_management.config;
 
+import com.sharathp.service.symptom_management.auth.OAuthSmUserDetailsService;
 import com.sharathp.service.symptom_management.model.Role;
 import com.sharathp.service.symptom_management.model.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -18,6 +22,8 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+
+import java.util.Arrays;
 
 @Configuration
 public class OAuth2SecurityConfiguration {
@@ -49,16 +55,22 @@ public class OAuth2SecurityConfiguration {
     protected static class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
         @Autowired
-        private AuthenticationManager authenticationManager;
+        private UserDetailsService userDetailsService;
 
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
             clients
                     .inMemory()
-                    .withClient("mobile").authorizedGrantTypes("password","refresh_token")
-                    .authorities(Role.CLIENT_ROLE)
+                    .withClient("mobile_doctor").authorizedGrantTypes("password","refresh_token")
+                    .authorities(Role.DOCTOR_CLIENT_ROLE)
                     .scopes(Scope.READ.name(), Scope.WRITE.name())
-                    .secret("123456");
+                    .secret("mobile_doctor")
+                    .and()
+                    .withClient("mobile_patient").authorizedGrantTypes("password", "refresh_token")
+                    .authorities(Role.PATIENT_CLIENT_ROLE)
+                    .scopes(Scope.READ.name(), Scope.WRITE.name())
+                    .secret("mobile_patient")
+            ;
         }
 
         /**
@@ -69,7 +81,16 @@ public class OAuth2SecurityConfiguration {
         public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
             endpoints
                     .tokenStore(tokenStore())
-                    .authenticationManager(authenticationManager);
+                    .authenticationManager(authenticationManager());
+        }
+
+        // this authentication manager exists only to wrap the userDetailsService with OAuthSmUserDetailsService..
+        private AuthenticationManager authenticationManager() {
+            final UserDetailsService wrappedUserDetailsService = new OAuthSmUserDetailsService(userDetailsService);
+            final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+            authenticationProvider.setUserDetailsService(wrappedUserDetailsService);
+            final AuthenticationManager authenticationManager = new ProviderManager(Arrays.asList(authenticationProvider));
+            return authenticationManager;
         }
 
         @Bean
