@@ -1,8 +1,7 @@
 package com.sharathp.service.symptom_management.config;
 
-import com.sharathp.service.symptom_management.auth.OAuthSmUserDetailsService;
-import com.sharathp.service.symptom_management.model.Role;
-import com.sharathp.service.symptom_management.model.Scope;
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +22,9 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 
-import java.util.Arrays;
+import com.sharathp.service.symptom_management.auth.OAuthSmUserDetailsService;
+import com.sharathp.service.symptom_management.model.Role;
+import com.sharathp.service.symptom_management.model.Scope;
 
 @Configuration
 public class OAuth2SecurityConfiguration {

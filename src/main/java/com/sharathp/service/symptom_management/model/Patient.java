@@ -1,37 +1,13 @@
 package com.sharathp.service.symptom_management.model;
 
-/**
- * Created by sproddut on 11/18/14.
- */
-public class Patient {
-    private String id;
-    private String firstName;
-    private String lastName;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+
+@Entity
+public class Patient extends SmUser {
+
+    @Column(name = "patient_id", nullable = false)
     private String patientId;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 
     public String getPatientId() {
         return patientId;
