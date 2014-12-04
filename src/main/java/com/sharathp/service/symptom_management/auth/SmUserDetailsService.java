@@ -17,7 +17,7 @@ public class SmUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        SmUser smUser = smUserRepository.findOne(username);
+        SmUser smUser = smUserRepository.findByUsername(username);
         if(smUser != null){
             return smUser;
         }

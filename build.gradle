@@ -42,6 +42,9 @@ dependencies {
     compile("org.springframework.security.oauth:spring-security-oauth2:2.0.4.RELEASE")
     compile("postgresql:postgresql:9.1-901.jdbc4")
     compile("com.google.guava:guava:18.0")
+    compile("net.sf.dozer:dozer:5.4.0") {
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    }
     testCompile("junit:junit")
 }
 
