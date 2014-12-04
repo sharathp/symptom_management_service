@@ -7,7 +7,7 @@ import java.util.UUID;
 import com.sharathp.service.symptom_management.dao.PatientDao;
 import com.sharathp.service.symptom_management.model.Patient;
 
-public class StubbedPatientDao implements PatientDao {
+public class    StubbedPatientDao implements PatientDao {
     private final List<Patient> patients;
 
     public StubbedPatientDao() {

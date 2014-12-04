@@ -1,15 +1,16 @@
 package com.sharathp.service.symptom_management.model;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.persistence.*;
-
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.persistence.*;
+import java.util.Collection;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity(name = "sm_user")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -32,6 +33,7 @@ public class SmUser implements UserDetails {
             joinColumns = @JoinColumn(name = "username"))
     @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     @Column(name="role")
+    @Fetch(FetchMode.SUBSELECT)
     private Set<String> roles;
 
     @Column(nullable = false)

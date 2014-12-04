@@ -1,7 +1,6 @@
 package com.sharathp.service.symptom_management;
 
-import javax.annotation.PostConstruct;
-
+import com.sharathp.service.symptom_management.dozer.UUIDBeanFactory;
 import com.sharathp.service.symptom_management.model.Doctor;
 import com.sharathp.service.symptom_management.model.Patient;
 import com.sharathp.service.symptom_management.repo.SmUserRepository;
@@ -10,6 +9,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
+import org.dozer.loader.api.BeanMappingBuilder;
+import org.dozer.loader.api.TypeMappingOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -19,8 +20,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.sharathp.service.symptom_management.dao.PatientDao;
-import com.sharathp.service.symptom_management.dao.impl.StubbedPatientDao;
+import javax.annotation.PostConstruct;
+import java.util.UUID;
 
 @Configuration
 @ComponentScan
@@ -41,7 +42,15 @@ public class Application {
 
     @Bean
     public Mapper mapper() {
-        return new DozerBeanMapper();
+        final BeanMappingBuilder builder = new BeanMappingBuilder() {
+            protected void configure() {
+                mapping(UUID.class, UUID.class, TypeMappingOptions.oneWay(), TypeMappingOptions.beanFactory(UUIDBeanFactory.class.getName()));
+            }
+        };
+
+        final DozerBeanMapper mapper = new DozerBeanMapper();
+        mapper.addMapping(builder);
+        return mapper;
     }
 
     @PostConstruct
@@ -68,17 +77,12 @@ public class Application {
         smUserRepository.save(patient);
 
         Doctor doctor = new Doctor();
-        doctor.setUsername("patient");
-        doctor.setPassword("patient");
-        doctor.setFirstName("patient");
-        doctor.setLastName("patient");
+        doctor.setUsername("doctor");
+        doctor.setPassword("doctor");
+        doctor.setFirstName("doctor");
+        doctor.setLastName("doctor");
         doctor.setDoctorId("d1");
         SmUserUtil.addDoctorRoles(doctor);
         smUserRepository.save(doctor);
-    }
-
-    @Bean
-    public PatientDao patientDao() {
-        return new StubbedPatientDao();
     }
 }

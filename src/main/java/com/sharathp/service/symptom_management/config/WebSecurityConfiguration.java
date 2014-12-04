@@ -41,6 +41,7 @@ public class WebSecurityConfiguration {
                     .and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
+                    .csrf().disable()
                     .antMatcher("/admin/**")
                     .authorizeRequests().anyRequest().hasRole("ADMIN");
         }
