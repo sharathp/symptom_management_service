@@ -23,7 +23,7 @@ jar {
 }
 
 applicationDefaultJvmArgs = [
-    "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
+    // "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
 ]
 
 repositories {
@@ -47,6 +47,7 @@ dependencies {
     compile("net.sf.dozer:dozer:5.4.0") {
         exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     }
+    compile("org.hibernate:hibernate-validator")
     testCompile("junit:junit")
 }
 

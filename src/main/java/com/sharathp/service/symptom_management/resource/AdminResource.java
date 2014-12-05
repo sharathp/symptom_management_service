@@ -1,9 +1,18 @@
 package com.sharathp.service.symptom_management.resource;
 
+import javax.validation.constraints.NotNull;
+
 public class AdminResource {
+    @NotNull
     private String password;
+
+    @NotNull
     private String username;
+
+    @NotNull
     private String firstName;
+
+    @NotNull
     private String lastName;
 
     public String getPassword() {

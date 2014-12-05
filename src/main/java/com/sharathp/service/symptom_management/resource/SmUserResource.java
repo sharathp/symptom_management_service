@@ -3,14 +3,23 @@ package com.sharathp.service.symptom_management.resource;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class SmUserResource {
     @JsonIgnore
     private UUID id;
+
+    @NotNull
     private String password;
+
+    @NotNull
     private String username;
+
+    @NotNull
     private String firstName;
+
+    @NotNull
     private String lastName;
 
     public UUID getId() {
