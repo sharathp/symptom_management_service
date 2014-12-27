@@ -2,12 +2,11 @@ package com.sharathp.service.symptom_management.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.UUID;
 
 @Entity
 public class Medication {

@@ -1,8 +1,6 @@
 package com.sharathp.service.symptom_management.auth;
 
-import java.util.Collection;
-import java.util.Collections;
-
+import com.sharathp.service.symptom_management.model.Role;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,7 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.sharathp.service.symptom_management.model.Role;
+import java.util.Collection;
+import java.util.Collections;
 
 public class OAuthSmUserDetailsService implements UserDetailsService {
     private final Log logger = LogFactory.getLog(getClass());

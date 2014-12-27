@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @RestController
+@RequestMapping(value = "/api/v1/medications", produces = "application/json")
 public class MedicationController {
 
     @Autowired
@@ -30,8 +31,8 @@ public class MedicationController {
     @Autowired
     private Mapper mapper;
 
-    @RequestMapping(value = "/medications", method = RequestMethod.GET)
-    // @PreAuthorize("#oauth2.clientHasAnyRole('ROLE_PATIENT', 'ROLE_DOCTOR')")
+    @RequestMapping(method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ROLE_DOCTOR')")
     public List<MedicationResource> getAllMedications() {
         final Spliterator<Medication> spliterator = medicationRepository.findAll().spliterator();
         return StreamSupport.stream(spliterator, false)
@@ -39,7 +40,8 @@ public class MedicationController {
                 .collect(Collectors.toList());
     }
 
-    @RequestMapping(value = "/medications", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
+    @PreAuthorize("hasRole('ROLE_DOCTOR')")
     public ResponseEntity<String> createMedication(@Valid @RequestBody final MedicationResource medicationResource,
                                               final BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {

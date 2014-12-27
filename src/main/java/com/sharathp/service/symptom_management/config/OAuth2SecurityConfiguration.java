@@ -1,7 +1,8 @@
 package com.sharathp.service.symptom_management.config;
 
-import java.util.Arrays;
-
+import com.sharathp.service.symptom_management.auth.OAuthSmUserDetailsService;
+import com.sharathp.service.symptom_management.model.Role;
+import com.sharathp.service.symptom_management.model.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,9 +23,7 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 
-import com.sharathp.service.symptom_management.auth.OAuthSmUserDetailsService;
-import com.sharathp.service.symptom_management.model.Role;
-import com.sharathp.service.symptom_management.model.Scope;
+import java.util.Arrays;
 
 @Configuration
 public class OAuth2SecurityConfiguration {
@@ -39,15 +38,12 @@ public class OAuth2SecurityConfiguration {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/patients/**")
+            http.requestMatchers()
+                    .antMatchers("/api/**")
+                    .and()
                     .authorizeRequests()
                     .anyRequest()
-                    .hasRole("DOCTOR")
-                .and()
-                .antMatcher("/medications/**")
-                    .authorizeRequests()
-                    .anyRequest()
-                    .hasAnyRole("PATIENT", "DOCTOR");
+                    .authenticated();
         }
     }
 

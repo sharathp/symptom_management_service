@@ -2,7 +2,6 @@ package com.sharathp.service.symptom_management.util;
 
 import com.sharathp.service.symptom_management.model.Role;
 import com.sharathp.service.symptom_management.model.SmUser;
-import org.springframework.util.CollectionUtils;
 
 import java.util.HashSet;
 

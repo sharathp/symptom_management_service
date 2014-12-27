@@ -1,13 +1,12 @@
 package com.sharathp.service.symptom_management.auth;
 
+import com.sharathp.service.symptom_management.model.SmUser;
+import com.sharathp.service.symptom_management.repo.SmUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-
-import com.sharathp.service.symptom_management.model.SmUser;
-import com.sharathp.service.symptom_management.repo.SmUserRepository;
 
 @Component
 public class SmUserDetailsService implements UserDetailsService {
