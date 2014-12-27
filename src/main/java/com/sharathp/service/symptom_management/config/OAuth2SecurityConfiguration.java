@@ -42,7 +42,12 @@ public class OAuth2SecurityConfiguration {
             http.antMatcher("/patients/**")
                     .authorizeRequests()
                     .anyRequest()
-                    .hasRole("DOCTOR");
+                    .hasRole("DOCTOR")
+                .and()
+                .antMatcher("/medications/**")
+                    .authorizeRequests()
+                    .anyRequest()
+                    .hasAnyRole("PATIENT", "DOCTOR");
         }
     }
 
