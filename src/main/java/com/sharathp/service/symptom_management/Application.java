@@ -7,6 +7,8 @@ import com.sharathp.service.symptom_management.model.Patient;
 import com.sharathp.service.symptom_management.repo.MedicationRepository;
 import com.sharathp.service.symptom_management.repo.SmUserRepository;
 import com.sharathp.service.symptom_management.util.SmUserUtil;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dozer.DozerBeanMapper;
@@ -16,14 +18,23 @@ import org.dozer.loader.api.TypeMappingOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -36,10 +47,10 @@ import java.util.stream.IntStream;
 // TODO - consider using org.springframework.boot.autoconfigure.SpringBootApplication annotation instead
 public class Application {
 
-    @Autowired
+//    @Autowired
     private SmUserRepository smUserRepository;
 
-    @Autowired
+//    @Autowired
     private MedicationRepository medicationUserRepository;
 
     private final Log logger = LogFactory.getLog(getClass());
@@ -61,13 +72,32 @@ public class Application {
         return mapper;
     }
 
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(final EntityManagerFactoryBuilder builder)
+            throws IOException {
+        return builder.dataSource(dataSource())
+                .persistenceUnit("symptom_management")
+                .build();
+    }
+
+    @Bean
+    public DataSource dataSource() throws IOException {
+        final DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
+        final Resource resource = resourceLoader.getResource("datasource.properties");
+//        final ClassPathResource classPathResource = new ClassPathResource("datasource.properties");
+        final Properties dataSourceProperties = PropertiesLoaderUtils.loadProperties(resource);
+        final HikariConfig config = new HikariConfig(dataSourceProperties);
+        final HikariDataSource ds = new HikariDataSource(config);
+        return ds;
+    }
+
     @PostConstruct
     private void initDatabase() {
         logger.info("Initializing database...");
-        createAdmin();
-        createDoctor();
-        createPatient();
-        createMedications();
+//        createAdmin();
+//        createDoctor();
+//        createPatient();
+//        createMedications();
     }
 
     private List<Medication> createMedications() {
