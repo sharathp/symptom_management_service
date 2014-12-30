@@ -48,6 +48,10 @@ public class MedicationController {
             return new ResponseEntity<String>(ValidationUtil.getErrorMessage(bindingResult.getAllErrors()),
                     HttpStatus.BAD_REQUEST);
         }
+
+        // remove id to prevent "rogue" inserts..
+        medicationResource.setId(null);
+
         final Medication existingMedication = medicationRepository.findByName(medicationResource.getName());
         if(existingMedication != null) {
             return new ResponseEntity<String>("Medication already exists: " + medicationResource.getId(),

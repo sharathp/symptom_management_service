@@ -31,10 +31,11 @@ public class DummyDataConfiguration {
     @PostConstruct
     private void initDatabase() {
         logger.info("Initializing database...");
+        final List<Medication> medications = createMedications();
         createAdmin();
         createDoctor();
-        createPatient();
-        createMedications();
+        createPatient(medications);
+
     }
 
     private List<Medication> createMedications() {
@@ -48,13 +49,15 @@ public class DummyDataConfiguration {
                 .collect(Collectors.toList());
     }
 
-    private Patient createPatient() {
+    private Patient createPatient(final List<Medication> medications) {
         Patient patient = new Patient();
         patient.setUsername("patient");
         patient.setPassword("patient");
         patient.setFirstName("patient");
         patient.setLastName("patient");
         patient.setPatientId("p1");
+        patient.getMedications().addAll(medications.stream().limit(3).collect(Collectors.toList()));
+
         SmUserUtil.addPatientRoles(patient);
         smUserRepository.save(patient);
         return patient;

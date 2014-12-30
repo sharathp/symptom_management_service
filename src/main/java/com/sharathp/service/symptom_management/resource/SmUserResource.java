@@ -22,6 +22,7 @@ public class SmUserResource {
     @NotNull
     private String lastName;
 
+    @JsonProperty
     public UUID getId() {
         return id;
     }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -58,7 +59,7 @@ public class PatientController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        final List<Medication> medications = null;
+        final Set<Medication> medications = patient.getMedications();
         final List<MedicationResource> medicationResources = medications.stream()
                 .map(medication -> mapper.map(medication, MedicationResource.class))
                 .collect(Collectors.toList());
@@ -67,7 +68,7 @@ public class PatientController {
     }
 
     // TODO - authorize only if logged in doctor is patient's doctor.
-    @RequestMapping(value="/{id}/medications", method = RequestMethod.GET, consumes = "application/json")
+    @RequestMapping(value="/{id}/medications", method = RequestMethod.POST, consumes = "application/json")
     @PreAuthorize("hasRole('ROLE_DOCTOR')")
     public ResponseEntity<String> addMedications(@PathVariable final UUID id,
                                                  @Valid @RequestBody final List<MedicationResource> medicationResources) {
@@ -76,8 +77,15 @@ public class PatientController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        // TODO - Add medicationResources to patients' medications, and return correct url..
-        return new ResponseEntity<String>("", HttpStatus.CREATED);
+        final List<Medication> newMedications = medicationResources.stream()
+                .map(medicationResource -> mapper.map(medicationResource, Medication.class))
+                .collect(Collectors.toList());
+
+        patient.getMedications().addAll(newMedications);
+        patientRepository.save(patient);
+
+        // TODO - return above url
+        return new ResponseEntity<String>(patient.getId().toString(), HttpStatus.CREATED);
     }
 
     public void setPatientRepository(PatientRepository patientRepository) {
