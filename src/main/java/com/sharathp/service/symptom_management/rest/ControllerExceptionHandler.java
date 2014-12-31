@@ -16,6 +16,6 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({JpaObjectRetrievalFailureException.class})
     public ResponseEntity<String> handleEntityNotFoundExceptionException(final Exception ex) {
         logger.error("Unable to find entity", ex);
-        return new ResponseEntity<String>("Unable to find entity: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Unable to find entity: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

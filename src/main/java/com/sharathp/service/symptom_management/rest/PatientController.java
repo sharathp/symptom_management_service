@@ -2,8 +2,11 @@ package com.sharathp.service.symptom_management.rest;
 
 import com.sharathp.service.symptom_management.model.Medication;
 import com.sharathp.service.symptom_management.model.Patient;
+import com.sharathp.service.symptom_management.model.PatientCheckIn;
+import com.sharathp.service.symptom_management.repo.PatientCheckInRepository;
 import com.sharathp.service.symptom_management.repo.PatientRepository;
 import com.sharathp.service.symptom_management.resource.MedicationResource;
+import com.sharathp.service.symptom_management.resource.PatientCheckInResource;
 import com.sharathp.service.symptom_management.resource.PatientResource;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +17,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.Spliterator;
@@ -29,6 +34,9 @@ import java.util.stream.StreamSupport;
 public class PatientController {
     @Autowired
     private PatientRepository patientRepository;
+
+    @Autowired
+    private PatientCheckInRepository patientCheckInRepository;
 
     @Autowired
     private Mapper mapper;
@@ -50,7 +58,7 @@ public class PatientController {
         if(patient == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<PatientResource>(mapper.map(patient, PatientResource.class),
+        return new ResponseEntity<>(mapper.map(patient, PatientResource.class),
                 HttpStatus.OK);
     }
 
@@ -68,7 +76,7 @@ public class PatientController {
                 .map(medication -> mapper.map(medication, MedicationResource.class))
                 .collect(Collectors.toList());
 
-        return new ResponseEntity<List<MedicationResource>>(medicationResources, HttpStatus.OK);
+        return new ResponseEntity<>(medicationResources, HttpStatus.OK);
     }
 
     // TODO - authorize only if logged in doctor is patient's doctor.
@@ -89,11 +97,51 @@ public class PatientController {
         patientRepository.save(patient);
 
         // TODO - return above url
-        return new ResponseEntity<String>(patient.getId().toString(), HttpStatus.CREATED);
+        return new ResponseEntity<>(patient.getId().toString(), HttpStatus.CREATED);
+    }
+
+    // TODO - authorize only if logged in patient is the same patient
+    @RequestMapping(value="/{patientId}/check-ins", method = RequestMethod.POST, consumes = "application/json")
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    public ResponseEntity<String> addCheckIn(@PathVariable final UUID patientId,
+                                             @Valid @RequestBody final PatientCheckInResource patientCheckInResource) {
+        final Patient patient = patientRepository.findOne(patientId);
+        if(patient == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        final PatientCheckIn patientCheckIn = mapper.map(patientCheckInResource, PatientCheckIn.class);
+        patientCheckIn.setPatient(patient);
+
+        patientCheckInRepository.save(patientCheckIn);
+
+        // TODO - return correct url
+        return new ResponseEntity<>(patientCheckIn.getId().toString(), HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value="/{patientId}/check-ins", method = RequestMethod.GET, consumes = "application/json")
+    @PreAuthorize("hasAnyRole('ROLE_PATIENT', 'ROLE_DOCTOR')")
+    public ResponseEntity<List<PatientCheckInResource>> getPatientCheckIns(@PathVariable final UUID patientId,
+                                                                   @RequestParam Date from) {
+        final Patient patient = patientRepository.findOne(patientId);
+        if(patient == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        final List<PatientCheckInResource> patientCheckInResources = patientCheckInRepository
+                .findByPatientAndCreatedAtGreaterThanOrderByCreatedAtDesc(patient, from).stream()
+                .map(patientCheckIn -> mapper.map(patientCheckIn, PatientCheckInResource.class))
+                .collect(Collectors.toList());
+
+        // TODO - return correct url
+        return new ResponseEntity<>(patientCheckInResources, HttpStatus.OK);
     }
 
     public void setPatientRepository(PatientRepository patientRepository) {
         this.patientRepository = patientRepository;
+    }
+
+    public void setPatientCheckInRepository(PatientCheckInRepository patientCheckInRepository) {
+        this.patientCheckInRepository = patientCheckInRepository;
     }
 
     public void setMapper(Mapper mapper) {
