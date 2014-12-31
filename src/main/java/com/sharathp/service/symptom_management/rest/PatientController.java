@@ -10,6 +10,7 @@ import com.sharathp.service.symptom_management.resource.PatientCheckInResource;
 import com.sharathp.service.symptom_management.resource.PatientResource;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -119,10 +120,12 @@ public class PatientController {
         return new ResponseEntity<>(patientCheckIn.getId().toString(), HttpStatus.CREATED);
     }
 
-    @RequestMapping(value="/{patientId}/check-ins", method = RequestMethod.GET, consumes = "application/json")
+
+    // e.g. from = urlencode("2011-07-11T21:28:59.564+0100")
+    @RequestMapping(value="/{patientId}/check-ins", method = RequestMethod.GET)
     @PreAuthorize("hasAnyRole('ROLE_PATIENT', 'ROLE_DOCTOR')")
     public ResponseEntity<List<PatientCheckInResource>> getPatientCheckIns(@PathVariable final UUID patientId,
-                                                                   @RequestParam Date from) {
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("from") final Date from) {
         final Patient patient = patientRepository.findOne(patientId);
         if(patient == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
