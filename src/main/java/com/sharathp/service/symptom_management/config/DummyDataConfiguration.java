@@ -37,8 +37,8 @@ public class DummyDataConfiguration {
 
     }
 
-    private List<Medication> createMedications() {
-        return IntStream.rangeClosed(1, 10)
+    private List<Medication> createMedications(final int numMedications) {
+        return IntStream.rangeClosed(1, numMedications)
                 .mapToObj((i) -> {
                     final Medication medication = new Medication();
                     medication.setName("Medication " + i);
@@ -48,18 +48,22 @@ public class DummyDataConfiguration {
                 .collect(Collectors.toList());
     }
 
-    private Patient createPatient(final List<Medication> medications) {
-        Patient patient = new Patient();
-        patient.setUsername("patient");
-        patient.setPassword("patient");
-        patient.setFirstName("patient");
-        patient.setLastName("patient");
-        patient.setPatientId("p1");
-        patient.getMedications().addAll(medications.stream().limit(3).collect(Collectors.toList()));
-
-        SmUserUtil.addPatientRoles(patient);
-        smUserRepository.save(patient);
-        return patient;
+    private List<Patient> createPatients(final List<Medication> allMedications, final int numPatients) {
+        return IntStream.rangeClosed(1, numPatients)
+                .mapToObj((i) -> {
+                    final Patient patient = new Patient();
+                    patient.setUsername("patient " + i);
+                    patient.setPassword("patient " + i);
+                    patient.setFirstName("pat-first-" + i);
+                    patient.setLastName("pat-last-" + i);
+                    patient.setPatientId("p" + i);
+                    // FIXME - make this random..
+                    patient.getMedications().addAll(allMedications.stream().limit(3).collect(Collectors.toList()));
+                    SmUserUtil.addPatientRoles(patient);
+                    smUserRepository.save(patient);
+                    return patient;
+                })
+                .collect(Collectors.toList());
     }
 
     private Patient createAdmin() {
@@ -76,15 +80,19 @@ public class DummyDataConfiguration {
         return admin;
     }
 
-    private Doctor createDoctor() {
-        Doctor doctor = new Doctor();
-        doctor.setUsername("doctor");
-        doctor.setPassword("doctor");
-        doctor.setFirstName("doctor");
-        doctor.setLastName("doctor");
-        doctor.setDoctorId("d1");
-        SmUserUtil.addDoctorRoles(doctor);
-        smUserRepository.save(doctor);
-        return doctor;
+    private List<Doctor> createDoctors(final int numDoctors) {
+        return IntStream.rangeClosed(1, numDoctors)
+                .mapToObj((i) -> {
+                    final Doctor doctor = new Doctor();
+                    doctor.setUsername("doctor " + i);
+                    doctor.setPassword("doctor " + i);
+                    doctor.setFirstName("doc-first-" + i);
+                    doctor.setLastName("doc-last-" + i);
+                    doctor.setDoctorId("d" + i);
+                    SmUserUtil.addDoctorRoles(doctor);
+                    smUserRepository.save(doctor);
+                    return doctor;
+                })
+                .collect(Collectors.toList());
     }
 }
