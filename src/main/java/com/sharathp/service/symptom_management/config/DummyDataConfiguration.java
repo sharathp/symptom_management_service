@@ -29,11 +29,11 @@ public class DummyDataConfiguration {
 
     @PostConstruct
     private void initDatabase() {
-        logger.info("Initializing database...");
-        final List<Medication> medications = createMedications();
-        createAdmin();
-        createDoctor();
-        createPatient(medications);
+        // logger.info("Initializing database...");
+        // final List<Medication> medications = createMedications();
+        // createAdmin();
+        // createDoctor();
+        // createPatient(medications);
 
     }
 

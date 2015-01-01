@@ -1,5 +1,6 @@
 package com.sharathp.service.symptom_management;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sharathp.service.symptom_management.dozer.UUIDBeanFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -13,6 +14,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.EntityManagerFactoryBuilde
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -56,6 +58,14 @@ public class Application {
         return builder.dataSource(dataSource())
                 .persistenceUnit("symptom_management")
                 .build();
+    }
+
+    @Bean
+    @Primary
+    public ObjectMapper objectMapper() {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS , false);
+        return objectMapper;
     }
 
     @Bean
