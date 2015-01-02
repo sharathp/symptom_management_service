@@ -28,7 +28,7 @@ public class SmUserResource {
     }
 
     @JsonIgnore
-    public void setId(UUID id) {
+    public void setId(final UUID id) {
         this.id = id;
     }
 
@@ -38,7 +38,7 @@ public class SmUserResource {
     }
 
     @JsonProperty
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
@@ -46,7 +46,7 @@ public class SmUserResource {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         this.username = username;
     }
 
@@ -54,7 +54,7 @@ public class SmUserResource {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public void setFirstName(final String firstName) {
         this.firstName = firstName;
     }
 
@@ -62,7 +62,7 @@ public class SmUserResource {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName(final String lastName) {
         this.lastName = lastName;
     }
 }

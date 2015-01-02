@@ -36,7 +36,7 @@ public class Patient extends SmUser {
         return medications;
     }
 
-    public void setMedications(Set<Medication> medications) {
+    public void setMedications(final Set<Medication> medications) {
         this.medications = medications;
     }
 
@@ -44,7 +44,7 @@ public class Patient extends SmUser {
         return checkIns;
     }
 
-    public void setCheckIns(List<PatientCheckIn> checkIns) {
+    public void setCheckIns(final List<PatientCheckIn> checkIns) {
         this.checkIns = checkIns;
     }
 
@@ -52,7 +52,30 @@ public class Patient extends SmUser {
         return patientId;
     }
 
-    public void setPatientId(String patientId) {
+    public void setPatientId(final String patientId) {
         this.patientId = patientId;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final Patient patient = (Patient) o;
+
+        if (!patientId.equals(patient.patientId)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return patientId.hashCode();
     }
 }

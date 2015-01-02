@@ -10,7 +10,7 @@ public class DoctorResource extends SmUserResource {
         return doctorId;
     }
 
-    public void setDoctorId(String doctorId) {
+    public void setDoctorId(final String doctorId) {
         this.doctorId = doctorId;
     }
 }

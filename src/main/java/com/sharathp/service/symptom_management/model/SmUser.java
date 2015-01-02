@@ -56,11 +56,11 @@ public class SmUser implements UserDetails {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         this.username = username;
     }
 
@@ -68,7 +68,7 @@ public class SmUser implements UserDetails {
         return roles;
     }
 
-    public void setRoles(Set<String> roles) {
+    public void setRoles(final Set<String> roles) {
         this.roles = roles;
     }
 
@@ -81,7 +81,7 @@ public class SmUser implements UserDetails {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(final UUID id) {
         this.id = id;
     }
 
@@ -89,7 +89,7 @@ public class SmUser implements UserDetails {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public void setFirstName(final String firstName) {
         this.firstName = firstName;
     }
 
@@ -97,7 +97,7 @@ public class SmUser implements UserDetails {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName(final String lastName) {
         this.lastName = lastName;
     }
 

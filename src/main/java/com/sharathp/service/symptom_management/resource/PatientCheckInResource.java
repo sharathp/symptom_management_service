@@ -20,7 +20,7 @@ public class PatientCheckInResource {
     }
 
     @JsonIgnore
-    public void setId(UUID id) {
+    public void setId(final UUID id) {
         this.id = id;
     }
 
@@ -28,7 +28,7 @@ public class PatientCheckInResource {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(final Date createdAt) {
         this.createdAt = createdAt;
     }
 }

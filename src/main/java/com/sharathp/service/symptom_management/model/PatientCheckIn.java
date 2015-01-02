@@ -33,7 +33,7 @@ public class PatientCheckIn {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(final UUID id) {
         this.id = id;
     }
 
@@ -41,7 +41,7 @@ public class PatientCheckIn {
         return patient;
     }
 
-    public void setPatient(Patient patient) {
+    public void setPatient(final Patient patient) {
         this.patient = patient;
     }
 
@@ -49,7 +49,7 @@ public class PatientCheckIn {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(final Date createdAt) {
         this.createdAt = createdAt;
     }
 }

@@ -35,4 +35,27 @@ public class Doctor extends SmUser {
     public void setDoctorId(String doctorId) {
         this.doctorId = doctorId;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final Doctor doctor = (Doctor) o;
+
+        if (!doctorId.equals(doctor.doctorId)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return doctorId.hashCode();
+    }
 }
