@@ -4,12 +4,15 @@ import com.sharathp.service.symptom_management.model.Doctor;
 import com.sharathp.service.symptom_management.model.Medication;
 import com.sharathp.service.symptom_management.model.Patient;
 import com.sharathp.service.symptom_management.model.PatientCheckIn;
+import com.sharathp.service.symptom_management.repo.DoctorRepository;
 import com.sharathp.service.symptom_management.repo.MedicationRepository;
-import com.sharathp.service.symptom_management.repo.SmUserRepository;
+import com.sharathp.service.symptom_management.repo.PatientCheckInRepository;
+import com.sharathp.service.symptom_management.repo.PatientRepository;
 import com.sharathp.service.symptom_management.util.SmUserUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -26,19 +29,31 @@ import java.util.stream.IntStream;
 // dummy data for inserting data into database
 public class DummyDataConfiguration {
     @Autowired
-    private SmUserRepository smUserRepository;
+    private DoctorRepository doctorRepository;
 
     @Autowired
-    private MedicationRepository medicationUserRepository;
+    private PatientRepository patientRepository;
+
+    @Autowired
+    private MedicationRepository medicationRepository;
+
+    @Autowired
+    private PatientCheckInRepository patientCheckInRepository;
+
+    @Value("${dummy.data.create}")
+    private boolean createDummyData;
 
     private final Log logger = LogFactory.getLog(getClass());
 
     @PostConstruct
     private void initDatabase() {
+        if(!createDummyData) {
+            logger.info("No Dummy data created..");
+            return;
+        }
+
         logger.info("Initializing database...");
-
         createAdmin();
-
         final int numPatients = 9;
         final int minNumCheckInsPerPatient = 2;
         final int numMedications = 25;
@@ -54,7 +69,7 @@ public class DummyDataConfiguration {
                 .mapToObj((i) -> {
                     final Medication medication = new Medication();
                     medication.setName("Medication " + i);
-                    medicationUserRepository.save(medication);
+                    medicationRepository.save(medication);
                     return medication;
                 })
                 .collect(Collectors.toList());
@@ -79,17 +94,15 @@ public class DummyDataConfiguration {
                             .mapToObj(r -> allMedications.get(r))
                             .collect(Collectors.toList());
                     patient.getMedications().addAll(medications);
-                    final List<PatientCheckIn> patientCheckIns = createPatientCheckIns(minNumCheckInsPerPatient
-                            + numCheckinRandom.nextInt(3));
-                    patient.setCheckIns(patientCheckIns);
                     SmUserUtil.addPatientRoles(patient);
-                    smUserRepository.save(patient);
+                    patientRepository.save(patient);
+                    createPatientCheckIns(minNumCheckInsPerPatient + numCheckinRandom.nextInt(3), patient);
                     return patient;
                 })
                 .collect(Collectors.toList());
     }
 
-    private List<PatientCheckIn> createPatientCheckIns(final int numCheckIns) {
+    private List<PatientCheckIn> createPatientCheckIns(final int numCheckIns, final Patient patient) {
         final long beginTime = Timestamp.valueOf("2013-01-01 00:00:00").getTime();
         final long endTime = Timestamp.valueOf("2014-12-31 00:00:00").getTime();
         final Random random = new Random();
@@ -98,6 +111,8 @@ public class DummyDataConfiguration {
                 .mapToObj(l -> {
                     final PatientCheckIn patientCheckIn = new PatientCheckIn();
                     patientCheckIn.setCreatedAt(new Date(l));
+                    patientCheckIn.setPatient(patient);
+                    patientCheckInRepository.save(patientCheckIn);
                     return patientCheckIn;
                 })
                 .collect(Collectors.toList());
@@ -113,13 +128,13 @@ public class DummyDataConfiguration {
         admin.setLastName("admin");
         admin.setPatientId("admin");
         SmUserUtil.addAdminRoles(admin);
-        smUserRepository.save(admin);
+        patientRepository.save(admin);
         return admin;
     }
 
     private List<Doctor> createDoctors(final int numDoctors, final List<Patient> allPatients) {
         final int numPatientsPerDoctor = allPatients.size()/numDoctors;
-        return IntStream.rangeClosed(0, numDoctors)
+        return IntStream.rangeClosed(0, numDoctors - 1)
                 .mapToObj((i) -> {
                     final Doctor doctor = new Doctor();
                     doctor.setUsername("doctor " + i);
@@ -132,7 +147,7 @@ public class DummyDataConfiguration {
                             allPatients.subList(startIndex, startIndex + numPatientsPerDoctor));
                     doctor.setPatients(patients);
                     SmUserUtil.addDoctorRoles(doctor);
-                    smUserRepository.save(doctor);
+                    doctorRepository.save(doctor);
                     return doctor;
                 })
                 .collect(Collectors.toList());
