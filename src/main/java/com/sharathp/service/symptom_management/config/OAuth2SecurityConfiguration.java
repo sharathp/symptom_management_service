@@ -127,7 +127,7 @@ public class OAuth2SecurityConfiguration {
                     if(defaultOAuth2AccessToken.getAdditionalInformation() != null) {
                         additionalInformation.putAll(defaultOAuth2AccessToken.getAdditionalInformation());
                     }
-                    additionalInformation.put("user-id", smUser.getId().toString());
+                    additionalInformation.put("user_id", smUser.getId().toString());
 
                     defaultOAuth2AccessToken.setAdditionalInformation(additionalInformation);
                     return defaultOAuth2AccessToken;
