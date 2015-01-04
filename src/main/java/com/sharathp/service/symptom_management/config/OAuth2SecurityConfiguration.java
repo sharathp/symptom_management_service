@@ -44,7 +44,7 @@ public class OAuth2SecurityConfiguration {
     protected static class ResourceServer extends ResourceServerConfigurerAdapter {
 
         @Override
-        public void configure(HttpSecurity http) throws Exception {
+        public void configure(final HttpSecurity http) throws Exception {
             http.requestMatchers()
                     .antMatchers("/api/**")
                     .and()
@@ -66,8 +66,10 @@ public class OAuth2SecurityConfiguration {
         @Autowired
         private UserDetailsService userDetailsService;
 
+        private TokenStore tokenStore = new InMemoryTokenStore();
+
         @Override
-        public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+        public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
             clients
                     .inMemory()
                     .withClient("mobile_doctor").authorizedGrantTypes("password","refresh_token")
@@ -78,8 +80,7 @@ public class OAuth2SecurityConfiguration {
                     .withClient("mobile_patient").authorizedGrantTypes("password", "refresh_token")
                     .authorities(Role.PATIENT_CLIENT_ROLE)
                     .scopes(Scope.READ.name(), Scope.WRITE.name())
-                    .secret("mobile_patient")
-            ;
+                    .secret("mobile_patient");
         }
 
         /**
@@ -87,7 +88,7 @@ public class OAuth2SecurityConfiguration {
          * to process authentication requests.
          */
         @Override
-        public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
             endpoints
                     .tokenStore(tokenStore())
                     .tokenServices(tokenServices())
@@ -104,11 +105,11 @@ public class OAuth2SecurityConfiguration {
         }
 
         private TokenStore tokenStore() {
-            return new InMemoryTokenStore();
+            return tokenStore;
         }
 
         private DefaultTokenServices tokenServices() {
-            DefaultTokenServices tokenServices = new DefaultTokenServices();
+            final DefaultTokenServices tokenServices = new DefaultTokenServices();
             tokenServices.setSupportRefreshToken(true);
             tokenServices.setTokenStore(tokenStore());
             tokenServices.setTokenEnhancer(tokenEnhancer());
