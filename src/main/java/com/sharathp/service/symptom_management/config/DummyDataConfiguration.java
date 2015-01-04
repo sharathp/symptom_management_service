@@ -83,8 +83,8 @@ public class DummyDataConfiguration {
         return IntStream.rangeClosed(1, numPatients)
                 .mapToObj((i) -> {
                     final Patient patient = new Patient();
-                    patient.setUsername("patient " + i);
-                    patient.setPassword("patient " + i);
+                    patient.setUsername("patient" + i);
+                    patient.setPassword("patient" + i);
                     patient.setFirstName("pat-first-" + i);
                     patient.setLastName("pat-last-" + i);
                     patient.setPatientId("p" + i);
@@ -137,8 +137,8 @@ public class DummyDataConfiguration {
         return IntStream.rangeClosed(0, numDoctors - 1)
                 .mapToObj((i) -> {
                     final Doctor doctor = new Doctor();
-                    doctor.setUsername("doctor " + i);
-                    doctor.setPassword("doctor " + i);
+                    doctor.setUsername("doctor" + i);
+                    doctor.setPassword("doctor" + i);
                     doctor.setFirstName("doc-first-" + i);
                     doctor.setLastName("doc-last-" + i);
                     doctor.setDoctorId("d" + i);
