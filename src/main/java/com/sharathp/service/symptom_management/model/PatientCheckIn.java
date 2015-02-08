@@ -48,11 +48,11 @@ public class PatientCheckIn {
     private Eating eating;
 
     @Column(nullable = false)
-    private boolean medicated;
+    private Boolean medicated;
 
     @ElementCollection
     @CollectionTable(name="patient_medication_intake",  joinColumns = @JoinColumn(name="checkin_id"))
-    private List<MedicationIntake> medications = new ArrayList<>();
+    private List<MedicationIntake> medicationIntakes = new ArrayList<>();
 
     public UUID getId() {
         return id;
@@ -94,19 +94,19 @@ public class PatientCheckIn {
         this.eating = eating;
     }
 
-    public boolean isMedicated() {
+    public Boolean isMedicated() {
         return medicated;
     }
 
-    public void setMedicated(boolean medicated) {
+    public void setMedicated(Boolean medicated) {
         this.medicated = medicated;
     }
 
-    public List<MedicationIntake> getMedications() {
-        return medications;
+    public List<MedicationIntake> getMedicationIntakes() {
+        return medicationIntakes;
     }
 
-    public void setMedications(List<MedicationIntake> medications) {
-        this.medications = medications;
+    public void setMedicationIntakes(List<MedicationIntake> medicationIntakes) {
+        this.medicationIntakes = medicationIntakes;
     }
 }

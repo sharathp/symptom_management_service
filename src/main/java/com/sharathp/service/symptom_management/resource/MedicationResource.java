@@ -4,9 +4,9 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class MedicationResource {
+    @NotNull
     private UUID id;
 
-    @NotNull
     private String name;
 
     public UUID getId() {

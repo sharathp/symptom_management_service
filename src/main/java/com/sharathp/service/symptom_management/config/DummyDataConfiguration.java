@@ -1,7 +1,10 @@
 package com.sharathp.service.symptom_management.config;
 
 import com.sharathp.service.symptom_management.model.Doctor;
+import com.sharathp.service.symptom_management.model.Eating;
 import com.sharathp.service.symptom_management.model.Medication;
+import com.sharathp.service.symptom_management.model.MedicationIntake;
+import com.sharathp.service.symptom_management.model.Pain;
 import com.sharathp.service.symptom_management.model.Patient;
 import com.sharathp.service.symptom_management.model.PatientCheckIn;
 import com.sharathp.service.symptom_management.repo.DoctorRepository;
@@ -17,6 +20,9 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -111,9 +117,42 @@ public class DummyDataConfiguration {
                 .mapToObj(l -> {
                     final PatientCheckIn patientCheckIn = new PatientCheckIn();
                     patientCheckIn.setCheckInTime(new Date(l));
+                    patientCheckIn.setMedicationIntakes(getMedicationIntakes(new ArrayList<>(patient.getMedications()), l));
+                    patientCheckIn.setMedicated(true);
+                    patientCheckIn.setEating(getRandomEating());
+                    patientCheckIn.setPain(getRandomPain());
                     patientCheckIn.setPatient(patient);
                     patientCheckInRepository.save(patientCheckIn);
                     return patientCheckIn;
+                })
+                .collect(Collectors.toList());
+    }
+
+    private Eating getRandomEating() {
+        final Random random = new Random();
+        final Eating[] all = Eating.values();
+        return all[random.nextInt(all.length)];
+    }
+
+    private Pain getRandomPain() {
+        final Random random = new Random();
+        final Pain[] all = Pain.values();
+        return all[random.nextInt(all.length)];
+    }
+
+    private List<MedicationIntake> getMedicationIntakes(final List<Medication> medications, final long checkInTime) {
+        final Random random = new Random();
+        final int numMedications = random.nextInt(medications.size());
+        if(numMedications == 0) {
+            return Collections.emptyList();
+        }
+        return IntStream.rangeClosed(0, numMedications)
+                .mapToObj(medicationIndex -> medications.get(medicationIndex))
+                .map(medication -> {
+                    final MedicationIntake medicationIntake = new MedicationIntake();
+                    medicationIntake.setMedication(medication);
+                    medicationIntake.setTime(new Date(checkInTime));
+                    return medicationIntake;
                 })
                 .collect(Collectors.toList());
     }
