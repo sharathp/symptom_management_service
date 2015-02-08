@@ -110,7 +110,7 @@ public class DummyDataConfiguration {
                 .limit(numCheckIns)
                 .mapToObj(l -> {
                     final PatientCheckIn patientCheckIn = new PatientCheckIn();
-                    patientCheckIn.setCreatedAt(new Date(l));
+                    patientCheckIn.setCheckInTime(new Date(l));
                     patientCheckIn.setPatient(patient);
                     patientCheckInRepository.save(patientCheckIn);
                     return patientCheckIn;

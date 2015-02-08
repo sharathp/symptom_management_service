@@ -131,7 +131,7 @@ public class PatientController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         final List<PatientCheckInResource> patientCheckInResources = patientCheckInRepository
-                .findByPatientAndCreatedAtGreaterThanOrderByCreatedAtDesc(patient, from).stream()
+                .findByPatientAndCheckInTimeGreaterThanOrderByCheckInTimeDesc(patient, from).stream()
                 .map(patientCheckIn -> mapper.map(patientCheckIn, PatientCheckInResource.class))
                 .collect(Collectors.toList());
 

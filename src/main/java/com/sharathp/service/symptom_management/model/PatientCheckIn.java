@@ -3,14 +3,22 @@ package com.sharathp.service.symptom_management.model;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Immutable;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Immutable
@@ -24,16 +32,33 @@ public class PatientCheckIn {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "patient_id")
     private Patient patient;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
+    @Column(nullable = false)
+    private Date checkInTime;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Pain pain;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Eating eating;
+
+    @Column(nullable = false)
+    private boolean medicated;
+
+    @ElementCollection
+    @CollectionTable(name="patient_medication_intake",  joinColumns = @JoinColumn(name="checkin_id"))
+    private List<MedicationIntake> medications = new ArrayList<>();
 
     public UUID getId() {
         return id;
     }
 
-    public void setId(final UUID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -41,15 +66,47 @@ public class PatientCheckIn {
         return patient;
     }
 
-    public void setPatient(final Patient patient) {
+    public void setPatient(Patient patient) {
         this.patient = patient;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public Date getCheckInTime() {
+        return checkInTime;
     }
 
-    public void setCreatedAt(final Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCheckInTime(Date checkInTime) {
+        this.checkInTime = checkInTime;
+    }
+
+    public Pain getPain() {
+        return pain;
+    }
+
+    public void setPain(Pain pain) {
+        this.pain = pain;
+    }
+
+    public Eating getEating() {
+        return eating;
+    }
+
+    public void setEating(Eating eating) {
+        this.eating = eating;
+    }
+
+    public boolean isMedicated() {
+        return medicated;
+    }
+
+    public void setMedicated(boolean medicated) {
+        this.medicated = medicated;
+    }
+
+    public List<MedicationIntake> getMedications() {
+        return medications;
+    }
+
+    public void setMedications(List<MedicationIntake> medications) {
+        this.medications = medications;
     }
 }

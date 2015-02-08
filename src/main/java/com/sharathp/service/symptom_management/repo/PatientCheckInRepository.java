@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PatientCheckInRepository extends CrudRepository<PatientCheckIn, UUID> {
-    List<PatientCheckIn> findByPatientAndCreatedAtGreaterThanOrderByCreatedAtDesc(Patient patient,
-                                                                                  Date date);
+
+    List<PatientCheckIn> findByPatientAndCheckInTimeGreaterThanOrderByCheckInTimeDesc(Patient patient, Date date);
 }
