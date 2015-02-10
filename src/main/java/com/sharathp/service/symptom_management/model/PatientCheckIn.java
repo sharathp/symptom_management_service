@@ -94,7 +94,7 @@ public class PatientCheckIn {
         this.eating = eating;
     }
 
-    public Boolean isMedicated() {
+    public Boolean getMedicated() {
         return medicated;
     }
 
